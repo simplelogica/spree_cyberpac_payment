@@ -8,5 +8,9 @@ module Spree
     def provider_class
       ::ActiveMerchant::Billing::CyberpacGateway
     end
+
+    def method_type
+      'cyberpac'
+    end
   end
 end
