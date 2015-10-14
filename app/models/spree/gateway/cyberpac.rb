@@ -6,7 +6,7 @@ module Spree
     preference :terminal, :string, default: '1'
 
     def provider_class
-      ::ActiveMerchant::Billing::Gateways::CyberpacGateway
+      ::ActiveMerchant::Billing::CyberpacGateway
     end
   end
 end
