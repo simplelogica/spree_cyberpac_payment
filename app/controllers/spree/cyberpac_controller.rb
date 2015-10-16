@@ -6,8 +6,12 @@ module Spree
 
     def confirm
       @order.with_lock do
+        # Reload the order in case was locked an updated in another request
         @order.reload
         unless @order.complete?
+          # If the order is not complete, we arrive here before the notify
+          # so we create checkout payment and complete the order meanwhile
+          # the notify arrives
           payment = @order.payments.create!({
             amount: @order.total,
             payment_method: payment_method
@@ -27,9 +31,11 @@ module Spree
       secret = Spree::Gateway::CyberpacRedirect.last.preferences[:secret_key]
 
       @order.with_lock do
+        # Reload the order in case was locked an updated in another request
         @order.reload
-        payment = @order.payments.valid.last
-        payment ||= @order.payments.build
+        # Get last valid payment (in case we get before the confirm request)
+        # or build a new payment
+        payment = @order.payments.valid.last || @order.payments.build
         payment.update_attributes({
           amount: @order.total,
           payment_method: payment_method,
@@ -37,6 +43,7 @@ module Spree
         })
         if cyberpac_response.valid_signature?(secret) && cyberpac_response.success?
           payment.capture!
+          # Capture the payment and reload the order to have the new payment state loaded
           @order.reload.next
         else
           payment.invalidate
