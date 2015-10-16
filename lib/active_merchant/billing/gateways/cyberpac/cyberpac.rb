@@ -53,7 +53,7 @@ module ActiveMerchant #:nodoc:
       self.default_currency = CURRENCY_CODES['EUR']
       self.supported_countries = ['ES']
       self.supported_cardtypes = [:visa, :master]
-      self.homepage_url = 'http://empresa.lacaixa.es/comercios/cyberpac_es.html'
+      self.homepage_url = 'http://www.comerciaglobalpayments.com/tienesunatiendaonline_es.html'
       self.display_name = 'Cyberpac'
 
       def initialize(options = {})
