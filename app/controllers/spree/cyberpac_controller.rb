@@ -12,7 +12,7 @@ module Spree
           # If the order is not complete, we arrive here before the notify
           # so we create checkout payment and complete the order meanwhile
           # the notify arrives
-          payment = @order.payments.create!({
+          @order.payments.create!({
             amount: @order.total,
             payment_method: payment_method
           })
