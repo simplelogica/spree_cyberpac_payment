@@ -6,9 +6,8 @@ module ActiveMerchant #:nodoc:
     class CyberpacGateway < Gateway
       require 'digest/sha1'
 
-      # TODO: implement simple post request method
-      # REDIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/realizarPago'
-      # REDIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/realizarPago'
+      REDIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/realizarPago'.freeze
+      REDIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/realizarPago'.freeze
 
       # XML post request method
       DIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/operaciones'.freeze
@@ -91,6 +90,36 @@ module ActiveMerchant #:nodoc:
 
       def capture(money, authorization, options = {})
         commit :capture, build_capture_request(money, creditcard, options), options
+      end
+
+      def purchase_post_data order_data = {}
+        currency = CURRENCY_CODES[order_data[:currency]] || CURRENCY_CODES['EUR']
+        locale = LANGUAGE_CODES[order_data[:locale]] || LANGUAGE_CODES[:es]
+        signature_data = [order_data[:total], order_data[:number],
+          options[:merchant_code], currency, TRANSACTIONS[:purchase],
+          order_data[:notify_url], options[:secret_key]].join('')
+        {
+          :Ds_Merchant_MerchantName => options[:merchant_name],
+          :Ds_Merchant_MerchantCode => options[:merchant_code],
+          :Ds_Merchant_Terminal => options[:terminal],
+          :Ds_Merchant_Order => order_data[:number],
+          :Ds_Merchant_Amount => order_data[:total],
+          :Ds_Merchant_Titular => order_data[:user_name],
+          :Ds_Merchant_Currency => currency,
+          :Ds_Merchant_TransactionType => TRANSACTIONS[:purchase],
+          :Ds_Merchant_ProductDescription => "#{options[:merchant_name]}: #{order_data[:number]}",
+          :Ds_Merchant_MerchantURL => order_data[:notify_url],
+          :Ds_Merchant_UrlOK => order_data[:confirm_url],
+          :Ds_Merchant_UrlKO => order_data[:cancel_url],
+          :Ds_Merchant_ConsumerLanguage => locale,
+          :Ds_Merchant_MerchantSignature => Digest::SHA1.hexdigest(signature_data)
+        }
+      end
+
+      def purchase_redirect_url data = {}
+        url = test? ? REDIRECT_TEST_URL : REDIRECT_LIVE_URL
+        url = "#{url}?#{data.to_query}" unless data.blank?
+        url
       end
 
       private
