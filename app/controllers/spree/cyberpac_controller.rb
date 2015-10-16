@@ -15,7 +15,7 @@ module Spree
     def notify
       # Create the Cyberpac response from request params
       cyberpac_response = ActiveMerchant::Billing::CyberpacResponse.new(nil, 'notify', params)
-      secret = Spree::Gateway::Cyberpac.last.preferences[:secret_key]
+      secret = Spree::Gateway::CyberpacRedirect.last.preferences[:secret_key]
 
       payment = order.payments.create!({
         source: payment_method,
