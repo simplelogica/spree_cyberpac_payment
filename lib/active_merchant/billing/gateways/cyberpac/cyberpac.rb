@@ -14,6 +14,12 @@ module ActiveMerchant #:nodoc:
       DIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/operaciones'
       DIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/operaciones'
 
+      # TEST CARD:
+      #   CARD: 4548 8120 4940 0004
+      #   DATE: 12/12
+      #   CVV:  285
+      #   CIP:  123456
+
       CURRENCY_CODES = {
         "AUD"=> '036',
         "CAD"=> '124',
