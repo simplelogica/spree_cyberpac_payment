@@ -10,7 +10,7 @@ module Spree
     end
 
     def method_type
-      'cyberpac'
+      'cyberpac_direct'
     end
   end
 end
