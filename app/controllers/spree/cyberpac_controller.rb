@@ -41,7 +41,7 @@ module Spree
 
     def payment_method
       @payment_method ||= Spree::PaymentMethod.where(id: params[:payment_method_id]).first
-      @payment_method ||= Spree::PaymentMethod.where(type: "Spree::Gateway::Cyberpac").last
+      @payment_method ||= Spree::PaymentMethod.where(type: "Spree::Gateway::CyberpacRedirect").last
     end
 
     def provider
