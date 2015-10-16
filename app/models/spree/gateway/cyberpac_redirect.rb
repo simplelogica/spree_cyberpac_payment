@@ -1,20 +1,42 @@
 module Spree
   class Gateway::CyberpacRedirect < Gateway::CyberpacDirect
+    def method_type
+      'cyberpac_redirect'
+    end
+
+    def actions
+      %w{capture}
+    end
+
+    # Indicates whether its possible to capture the payment
+    def can_capture?(payment)
+      payment.checkout?
+    end
+
+    def capture(*)
+      simulated_successful_billing_response
+    end
+
+    def cancel(*)
+      simulated_successful_billing_response
+    end
+
+    def credit(*)
+      simulated_successful_billing_response
+    end
+
     def auto_capture?
-      true
+      false
     end
 
-    # We Fake a source with the payment method that don't responds to brand
-    # becouse que creadit card is managed in cyberpac, so we always support
-    # the source in the gateway
-    def supports?(source)
-      true
+    def source_required?
+      false
     end
 
-    def purchase(amount, checkout, gateway_options={})
-      # The payment is confirmed in the notify call, so we fake a success
-      # for the auto capture calls
-      ActiveMerchant::Billing::CyberpacResponse.new(true, 'purchase', {})
+    private
+
+    def simulated_successful_billing_response
+      ActiveMerchant::Billing::CyberpacResponse.new(true, 'capture')
     end
   end
 end
