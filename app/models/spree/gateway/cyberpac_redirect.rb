@@ -1,5 +1,5 @@
 module Spree
-  class Gateway::CyberpacRedirect < CyberpacDirect
+  class Gateway::CyberpacRedirect < Gateway::CyberpacDirect
     def auto_capture?
       true
     end
