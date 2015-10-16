@@ -32,6 +32,12 @@ module ActiveMerchant #:nodoc:
         @response_message = response_message_from params
       end
 
+      def valid_signature?(secret)
+        signature = [params["Ds_Amount"], params["Ds_Order"],
+          params["Ds_MerchantCode"], params["Ds_Currency"],
+          params["Ds_Response"], secret].join('')
+        Digest::SHA1.hexdigest(signature).upcase == params["Ds_Signature"]
+      end
       private
 
         def response_message_from(response)
