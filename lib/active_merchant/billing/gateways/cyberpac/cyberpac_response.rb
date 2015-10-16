@@ -29,6 +29,7 @@ module ActiveMerchant #:nodoc:
 
       def initialize(success, message, params = {}, options = {})
         super
+        @success ||= response_success?
         @response_message = response_message_from params
       end
 
@@ -38,7 +39,16 @@ module ActiveMerchant #:nodoc:
           params["Ds_Response"], secret].join('')
         Digest::SHA1.hexdigest(signature).upcase == params["Ds_Signature"]
       end
+
+      def response_code
+        params["Ds_Response"]
+      end
+
       private
+
+        def response_success?
+          response_code.blank? ? false : self.class.response_code_succeed?(response_code.to_i)
+        end
 
         def response_message_from(response)
           code = response[:ds_response].to_i
