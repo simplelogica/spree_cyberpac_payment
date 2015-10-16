@@ -11,8 +11,8 @@ module ActiveMerchant #:nodoc:
       # REDIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/realizarPago'
 
       # XML post request method
-      DIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/operaciones'
-      DIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/operaciones'
+      DIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/operaciones'.freeze
+      DIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/operaciones'.freeze
 
       # TEST CARD:
       #   CARD: 4548 8120 4940 0004
@@ -35,7 +35,7 @@ module ActiveMerchant #:nodoc:
         "GBP"=> '826',
         "USD"=> '840',
         "EUR"=> '978'
-      }
+      }.freeze
 
       LANGUAGE_CODES = {
         :es => '001',
@@ -63,7 +63,7 @@ module ActiveMerchant #:nodoc:
         :void_deferred_authorization        => 'Q',
         :recurring_deferred_authorization   => 'R',
         :successive_deferred_authorization  => 'S'
-      }
+      }.freeze
 
       self.money_format = :cents
       self.default_currency = CURRENCY_CODES['EUR']
