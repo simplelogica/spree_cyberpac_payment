@@ -37,6 +37,16 @@ module ActiveMerchant #:nodoc:
         "EUR"=> '978'
       }
 
+      LANGUAGE_CODES = {
+        :es => '001',
+        :en => '002',
+        :ca => '003',
+        :fr => '004',
+        :de => '005',
+        :it => '007',
+        :pt => '009',
+      }.freeze
+
       TRANSACTIONS = {
         :purchase                           => '0',
         :authorization                      => '1',
