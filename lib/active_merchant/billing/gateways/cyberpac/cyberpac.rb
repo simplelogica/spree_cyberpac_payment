@@ -176,7 +176,6 @@ module ActiveMerchant #:nodoc:
             'User-Agent'     => "Active Merchant - http://activemerchant.org",
             'Content-Type'   => "application/x-www-form-urlencoded"
           }
-          p request
           response = parse action, ssl_post(service_url, post_data(:entrada => request), headers)
           CyberpacResponse.new success_from(response),
                                message_from(response),
