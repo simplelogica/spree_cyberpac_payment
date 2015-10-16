@@ -132,7 +132,7 @@ module ActiveMerchant #:nodoc:
                   @options[:secret_key]
                 ].compact
 
-          Digest::SHA1.hexdigest(ary.map(&:to_s).join)
+          Digest::SHA1.hexdigest(ary.map(&:to_s).join(''))
         end
 
         def add_terminal(xml, options)
