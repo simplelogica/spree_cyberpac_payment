@@ -1,0 +1,18 @@
+<%
+  cyberpac = payment_method.provider
+  payment_number = "#{@order.number}"
+  payment_number += "-#{@order.payments.count}" if @order.payments.any?
+  order_data = {
+    number: payment_number,
+    total: (@order.total * 100).to_i,
+    user_name: @order.ship_address.full_name,
+    currency: @order.currency,
+    notify_url: notify_cyberpac_url,
+    confirm_url: confirm_cyberpac_url(@order),
+    cancel_url: cancel_cyberpac_url,
+    locale: I18n.locale
+  }
+  post_data = cyberpac.purchase_post_data(order_data)
+%>
+
+<%= link_to "Cyberpac", cyberpac.purchase_redirect_url(post_data), method: 'post' %>
