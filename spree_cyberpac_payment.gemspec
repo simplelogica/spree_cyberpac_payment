@@ -2,17 +2,17 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_cyberpac_payment'
-  s.version     = SpreeCyberpacPayment::VERSION 
-  s.summary     = 'Add Cyberpac payment'
-  s.description = 'Add Cyberpac payment'
+  s.version     = SpreeCyberpacPayment::VERSION
+  s.summary     = 'Add Cyberpac payment method to Spree Commerce'
+  s.description = s.summary
   s.required_ruby_version = '>= 2.0.0'
 
   s.author    = 'Ruben Sierra'
-  # s.email     = 'ruben@simplelogica.net'
-  # s.homepage  = 'http://www.spreecommerce.com'
+  s.email     = 'ruben@simplelogica.net'
+  s.homepage  = 'http://www.simplelogica.net'
 
-  #s.files       = `git ls-files`.split("\n")
-  #s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.files       = `git ls-files`.split("\n")
+  s.test_files   = `git ls-files -- spec/*`.split("\n")
   s.require_path = 'lib'
   s.requirements << 'none'
 
