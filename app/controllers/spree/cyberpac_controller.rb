@@ -4,6 +4,11 @@ module Spree
 
     before_action :load_order, only: [:confirm, :notify]
 
+    # TODO: Add purchase method using Cyberpac direct gateway
+    def purchase
+      raise(ActiveRecord::RecordNotFound)
+    end
+
     def confirm
       @order.with_lock do
         # Reload the order in case was locked an updated in another request
