@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_cyberpac_payment'
-  s.version     = '3.0.5.beta'
+  s.version     = SpreeCyberpacPayment::VERSION 
   s.summary     = 'Add Cyberpac payment'
   s.description = 'Add Cyberpac payment'
   s.required_ruby_version = '>= 2.0.0'
