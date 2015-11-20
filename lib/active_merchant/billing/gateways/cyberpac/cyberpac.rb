@@ -95,10 +95,11 @@ module ActiveMerchant #:nodoc:
       end
 
       def purchase_post_data order_data = {}
+        merchant_data_base64 = Base64.strict_encode64(build_merchant_data(order_data).to_json)
         {
           :Ds_Signature => redirect_signture(options[:secret_key], order_data[:number], merchant_data_base64),
           :Ds_SignatureVersion => SIGNATURE_VERSION,
-          :Ds_MerchantParameters => Base64.strict_encode64(build_merchant_data(order_data).to_json)
+          :Ds_MerchantParameters => merchant_data_base64
         }
       end
 
