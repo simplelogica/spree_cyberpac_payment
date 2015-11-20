@@ -19,6 +19,8 @@ module ActiveMerchant #:nodoc:
       #   CVV:  285
       #   CIP:  123456
 
+      SIGNATURE_VERSION = "HMAC_SHA256_V1".freeze
+
       CURRENCY_CODES = {
         "AUD" => '036',
         "CAD" => '124',
