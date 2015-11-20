@@ -28,6 +28,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def initialize(success, message, params = {}, options = {})
+        params.merge! JSON.parse(Base64.strict_decode64(params["Ds_MerchantParameters"])) unless params["Ds_MerchantParameters"].blank?
         super
         @success ||= response_success?
         @response_message = response_message_from params
