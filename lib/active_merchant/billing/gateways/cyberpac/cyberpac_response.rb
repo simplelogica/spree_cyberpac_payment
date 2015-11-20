@@ -35,7 +35,6 @@ module ActiveMerchant #:nodoc:
       end
 
       def valid_signature?(secret_key)
-        binding.pry
         return false if params['Ds_Signature'].blank?
         secret_key_base64 = Base64.strict_decode64(secret_key)
 
