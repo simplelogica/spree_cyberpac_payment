@@ -97,24 +97,28 @@ module ActiveMerchant #:nodoc:
       def purchase_post_data order_data = {}
         currency = CURRENCY_CODES[order_data[:currency]] || CURRENCY_CODES['EUR']
         locale = LANGUAGE_CODES[order_data[:locale]] || LANGUAGE_CODES[:es]
-        signature_data = [order_data[:total], order_data[:number],
-          options[:merchant_code], currency, TRANSACTIONS[:purchase],
-          order_data[:notify_url], options[:secret_key]].join('')
-        {
-          :Ds_Merchant_MerchantName => options[:merchant_name],
+
+        merchant_data = {
+          #:Ds_Merchant_MerchantName => options[:merchant_name],
+          #:Ds_Merchant_Titular => order_data[:user_name],
+          #:Ds_Merchant_ConsumerLanguage => locale,
           :Ds_Merchant_MerchantCode => options[:merchant_code],
           :Ds_Merchant_Terminal => options[:terminal],
           :Ds_Merchant_Order => order_data[:number],
           :Ds_Merchant_Amount => order_data[:total],
-          :Ds_Merchant_Titular => order_data[:user_name],
           :Ds_Merchant_Currency => currency,
           :Ds_Merchant_TransactionType => TRANSACTIONS[:purchase],
           :Ds_Merchant_ProductDescription => "#{options[:merchant_name]}: #{order_data[:number]}",
           :Ds_Merchant_MerchantURL => order_data[:notify_url],
           :Ds_Merchant_UrlOK => order_data[:confirm_url],
-          :Ds_Merchant_UrlKO => order_data[:cancel_url],
-          :Ds_Merchant_ConsumerLanguage => locale,
-          :Ds_Merchant_MerchantSignature => Digest::SHA1.hexdigest(signature_data)
+          :Ds_Merchant_UrlKO => order_data[:cancel_url]
+        }
+        merchant_data_base64 = Base64.strict_encode64(merchant_data.to_json)
+
+        {
+          :Ds_Signature => sign_request(options[:secret_key], order_data[:number], merchant_data_base64),
+          :Ds_SignatureVersion => SIGNATURE_VERSION,
+          :Ds_MerchantParameters => merchant_data_base64
         }
       end
 
@@ -122,6 +126,19 @@ module ActiveMerchant #:nodoc:
         url = test? ? REDIRECT_TEST_URL : REDIRECT_LIVE_URL
         url = "#{url}?#{data.to_query}" unless data.blank?
         url
+      end
+
+      def sign_request secret_key, order_number, merchant_data
+        key = Base64.strict_decode64(secret_key)
+        des3 = OpenSSL::Cipher::Cipher.new('des-ede3-cbc')
+        block_length = 8
+        des3.padding = 0
+        des3.encrypt
+        des3.key = key
+        order_number += "\0" until order_number.bytesize % block_length == 0
+        key_des3 = des3.update(order_number) + des3.final
+        result = OpenSSL::HMAC.digest('sha256', key_des3, merchant_data)
+        Base64.strict_encode64(result)
       end
 
       private
