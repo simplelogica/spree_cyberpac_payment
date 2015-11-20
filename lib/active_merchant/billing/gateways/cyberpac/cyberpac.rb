@@ -99,9 +99,9 @@ module ActiveMerchant #:nodoc:
         locale = LANGUAGE_CODES[order_data[:locale]] || LANGUAGE_CODES[:es]
 
         merchant_data = {
-          #:Ds_Merchant_MerchantName => options[:merchant_name],
-          #:Ds_Merchant_Titular => order_data[:user_name],
-          #:Ds_Merchant_ConsumerLanguage => locale,
+          :Ds_Merchant_MerchantName => options[:merchant_name],
+          :Ds_Merchant_Titular => order_data[:user_name],
+          :Ds_Merchant_ConsumerLanguage => locale,
           :Ds_Merchant_MerchantCode => options[:merchant_code],
           :Ds_Merchant_Terminal => options[:terminal],
           :Ds_Merchant_Order => order_data[:number],
