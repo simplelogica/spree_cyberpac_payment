@@ -9,7 +9,7 @@
   post_data = cyberpac.purchase_post_data(order_data)
 %>
 
-<%= form_tag 'https://sis-t.redsys.es:25443/sis/realizarPago', :id => 'cyberpac-form' do |f| %>
+<%= form_tag cyberpac.purchase_redirect_url, :id => 'cyberpac-form' do |f| %>
   <% post_data.each do |key, value| %>
     <%= hidden_field_tag key, value %>
   <% end %>

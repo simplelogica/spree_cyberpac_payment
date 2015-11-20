@@ -122,10 +122,8 @@ module ActiveMerchant #:nodoc:
         }
       end
 
-      def purchase_redirect_url data = {}
-        url = test? ? REDIRECT_TEST_URL : REDIRECT_LIVE_URL
-        url = "#{url}?#{data.to_query}" unless data.blank?
-        url
+      def purchase_redirect_url
+        test? ? REDIRECT_TEST_URL : REDIRECT_LIVE_URL
       end
 
       def sign_request secret_key, order_number, merchant_data
