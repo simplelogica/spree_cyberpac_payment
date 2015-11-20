@@ -6,12 +6,12 @@ module ActiveMerchant #:nodoc:
     class CyberpacGateway < Gateway
       require 'digest/sha1'
 
-      REDIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/realizarPago'.freeze
-      REDIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/realizarPago'.freeze
+      REDIRECT_TEST_URL = 'https://sis-t.redsys.es:25443/sis/realizarPago'.freeze
+      REDIRECT_LIVE_URL = 'https://sis.redsys.es/sis/realizarPago'.freeze
 
       # XML post request method
-      DIRECT_TEST_URL = 'https://sis-t.sermepa.es:25443/sis/operaciones'.freeze
-      DIRECT_LIVE_URL = 'https://sis.sermepa.es/sis/operaciones'.freeze
+      DIRECT_TEST_URL = 'https://sis-t.redsys.es:25443/sis/operaciones'.freeze
+      DIRECT_LIVE_URL = 'https://sis.redsys.es/sis/operaciones'.freeze
 
       # TEST CARD:
       #   CARD: 4548 8120 4940 0004
