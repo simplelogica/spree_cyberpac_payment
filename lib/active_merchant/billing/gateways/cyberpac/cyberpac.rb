@@ -169,6 +169,7 @@ module ActiveMerchant #:nodoc:
         end
 
         # TODO: implement recurring payments case TRANSACTIONS[:recurring]
+        # TODO: implement new sermepa encription
         def signature(transaction, amount, creditcard, order_id, options = {})
           currency = options[:currency] || self.class.default_currency
           transaction_code = TRANSACTIONS[transaction]
