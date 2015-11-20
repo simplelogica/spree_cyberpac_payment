@@ -34,11 +34,22 @@ module ActiveMerchant #:nodoc:
         @response_message = response_message_from params
       end
 
-      def valid_signature?(secret)
-        signature = [params["Ds_Amount"], params["Ds_Order"],
-          params["Ds_MerchantCode"], params["Ds_Currency"],
-          params["Ds_Response"], secret].join('')
-        Digest::SHA1.hexdigest(signature).upcase == params["Ds_Signature"]
+      def valid_signature?(secret_key)
+        binding.pry
+        return false if params['Ds_Signature'].blank?
+        secret_key_base64 = Base64.strict_decode64(secret_key)
+
+        des3 = OpenSSL::Cipher::Cipher.new('des-ede3-cbc')
+        block_length = 8
+        des3.padding = 0
+        des3.encrypt
+        des3.key = secret_key_base64
+        order_number = params['Ds_Order']
+        order_number += "\0" until order_number.bytesize % block_length == 0
+        key_des3 = des3.update(order_number) + des3.final
+        result = OpenSSL::HMAC.digest('sha256', key_des3, params['Ds_MerchantParameters'])
+        sig = Base64.strict_encode64(result).gsub("+", "-").gsub("/", "_")
+        sig == params['Ds_Signature']
       end
 
       def response_code
