@@ -47,9 +47,18 @@ module Spree
           response_code: cyberpac_response.response_code
         })
         if cyberpac_response.valid_signature?(secret) && cyberpac_response.success?
-          payment.capture!
           # Capture the payment and reload the order to have the new payment state loaded
-          @order.reload.next
+          payment.capture!
+          @order.reload
+          if @order.complete?
+            @order.shipments.each do |shipment|
+              shipment.update!(@order)
+              shipment.finalize! if shipment.ready?
+            end
+          else
+            @order.next
+          end
+
         else
           payment.invalidate
         end
