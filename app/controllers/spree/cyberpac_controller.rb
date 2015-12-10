@@ -42,7 +42,7 @@ module Spree
         # or build a new payment
         payment = @order.payments.valid.last || @order.payments.build
         payment.update_attributes({
-          amount: @order.total,
+          amount: cyberpac_response.response_amount,
           payment_method: payment_method,
           response_code: cyberpac_response.response_code
         })

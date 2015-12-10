@@ -55,6 +55,10 @@ module ActiveMerchant #:nodoc:
         params["Ds_Response"]
       end
 
+      def response_amount
+        params["Ds_Amount"].to_i / 100.0
+      end
+
       private
 
         def response_success?
