@@ -11,8 +11,6 @@ module Spree
 
     def confirm
       @order.with_lock do
-        # Reload the order in case was locked an updated in another request
-        @order.reload
         unless @order.complete?
           # If the order is not complete, we arrive here before the notify
           # so we create checkout payment and complete the order meanwhile
@@ -36,8 +34,6 @@ module Spree
       secret = Spree::Gateway::CyberpacRedirect.last.preferences[:secret_key]
 
       @order.with_lock do
-        # Reload the order in case was locked an updated in another request
-        @order.reload
         # Get last valid payment (in case we get before the confirm request)
         # or build a new payment
         payment = @order.payments.valid.last || @order.payments.build
