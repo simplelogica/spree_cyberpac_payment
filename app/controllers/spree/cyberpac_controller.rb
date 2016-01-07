@@ -18,7 +18,7 @@ module Spree
           @order.payments.create!({
             amount: @order.total,
             payment_method: payment_method
-          })
+          }) if @order.payments.valid.empty?
           @order.next
         end
       end
