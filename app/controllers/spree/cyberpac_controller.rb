@@ -43,16 +43,25 @@ module Spree
           response_code: cyberpac_response.response_code
         })
         if cyberpac_response.valid_signature?(secret) && cyberpac_response.success?
-          # Fix in case the user change the state browsing the funnel in another process while paying
-          @order.state = 'payment'
           # Capture the payment and reload the order to have the new payment state loaded
           payment.capture!
-          @order.next
+          # Reload in case states changed
+          @order.reload
+
+          # Fix in case the user change the state browsing the funnel in another process while paying
+          begin
+            state_change = @order.next
+          end while state_change && !@order.complete?
+
           if @order.complete?
             @order.shipments.each do |shipment|
               shipment.update!(@order)
               shipment.finalize! if shipment.ready?
             end
+          else
+            # If this wasn't here, order would transition to address state on complete failure
+            # because there would be no valid payments any more.
+            @order.update_column :state, 'confirm'
           end
         else
           payment.invalidate
