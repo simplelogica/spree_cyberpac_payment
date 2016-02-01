@@ -11,7 +11,7 @@ module Spree
 
     def confirm
       Rails.logger.tagged("Cyberpac confirm order #{@order.number}") do
-        Rails.logger.info "Initial state: #{@order.state}"
+        Rails.logger.info "State (Initial): #{@order.state}"
         @order.with_lock do
           unless @order.complete?
             # If the order is not complete, we arrive here before the notify
@@ -21,9 +21,9 @@ module Spree
               amount: @order.total,
               payment_method: payment_method
             }) if @order.payments.valid.empty?
-            Rails.logger.info "Before next state: #{@order.state}"
+            Rails.logger.info "State (Before next): #{@order.state}"
             @order.next
-            Rails.logger.info "After next state: #{@order.state}"
+            Rails.logger.info "State (After next): #{@order.state}"
           end
         end
       end
@@ -38,9 +38,9 @@ module Spree
         # Create the Cyberpac response from request params
         cyberpac_response = ActiveMerchant::Billing::CyberpacResponse.new(nil, 'notify', params)
         secret = Spree::Gateway::CyberpacRedirect.last.preferences[:secret_key]
-        Rails.logger.info "Initial state: #{@order.state}"
+        Rails.logger.info "State (Initial): #{@order.state}"
         @order.with_lock do
-          Rails.logger.info "Before payment state: #{@order.state}"
+          Rails.logger.info "State (Before payment): #{@order.state}"
           # Get last valid payment (in case we get before the confirm request)
           # or build a new payment
           payment = @order.payments.valid.last || @order.payments.build
@@ -49,20 +49,20 @@ module Spree
             payment_method: payment_method,
             response_code: cyberpac_response.response_code
           })
-          Rails.logger.info "After payment state: #{@order.state}"
+          Rails.logger.info "State (After payment): #{@order.state}"
           if cyberpac_response.valid_signature?(secret) && cyberpac_response.success?
             # Capture the payment and reload the order to have the new payment state loaded
             payment.capture!
-            Rails.logger.info "After capture state: #{@order.state}"
+            Rails.logger.info "State (After capture): #{@order.state}"
             # Reload in case states changed
             @order.reload
-            Rails.logger.info "After reload state: #{@order.state}"
+            Rails.logger.info "State (After reload): #{@order.state}"
 
             # Fix in case the user change the state browsing the funnel in another process while paying
             begin
               state_change = @order.next
             end while state_change && !@order.complete?
-            Rails.logger.info "After complete state: #{@order.state}"
+            Rails.logger.info "State (After complete): #{@order.state}"
             if @order.complete?
               @order.shipments.each do |shipment|
                 shipment.update!(@order)
@@ -73,7 +73,7 @@ module Spree
               # because there would be no valid payments any more.
               @order.update_column :state, 'confirm'
             end
-            Rails.logger.info "Before ends state: #{@order.state}"
+            Rails.logger.info "State (Before ends): #{@order.state}"
           else
             payment.invalidate
           end
