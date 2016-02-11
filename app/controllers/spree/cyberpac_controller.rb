@@ -30,10 +30,14 @@ module Spree
           end
         end
       end
-      flash.notice = Spree.t(:order_processed_successfully)
-      flash[:order_completed] = @order.complete?
-      session[:order_id] = nil
-      redirect_to order_path(@order)
+      if @order.complete?
+        flash.notice = Spree.t(:order_processed_successfully)
+        flash[:order_completed] = true
+        session[:order_id] = nil
+        redirect_to completion_route
+      else
+        redirect_to checkout_state_path(@order.state)
+      end
     end
 
     def notify
