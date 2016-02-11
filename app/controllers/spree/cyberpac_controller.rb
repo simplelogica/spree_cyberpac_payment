@@ -24,6 +24,9 @@ module Spree
             Rails.logger.info "State (Before next): #{@order.state}"
             @order.next
             Rails.logger.info "State (After next): #{@order.state}"
+            if @orders.errors.any?
+              Rails.logger.info "State (After next errors): #{@order.errors.full_messages}"
+            end
           end
         end
       end
@@ -63,6 +66,9 @@ module Spree
               state_change = @order.next
             end while state_change && !@order.complete?
             Rails.logger.info "State (After complete): #{@order.state}"
+            if @orders.errors.any?
+              Rails.logger.info "State (After complete errors): #{@order.errors.full_messages}"
+            end
             if @order.complete?
               @order.shipments.each do |shipment|
                 shipment.update!(@order)
